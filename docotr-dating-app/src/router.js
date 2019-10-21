@@ -30,22 +30,38 @@ export default new Router({
         {
             path: '/sign',
             name: 'sign',
-            component: ()=> import('./views/Sign.vue'),
+            component: () => import('./views/Sign.vue'),
             children: [
                 {
                     path: 'in',
-                    component: ()=> import('./views/SignIn.vue')
+                    component: () => import('./views/SignIn.vue')
                 },
                 {
                     path: 'up',
-                    component: ()=> import('./views/SignUp.vue')
+                    component: () => import('./views/SignUp.vue')
                 },
             ]
         },
         {
             path: '/dating/choose',
             name: 'dating-choose',
-            component: ()=> import('./views/DatingChoose.vue'),
+            component: () => import('./views/DatingChoose.vue'),
+            meta: {
+                requireAuth: true,
+            }
+        },
+        {
+            path: '/doctor/release/date',
+            name: 'doctor-release-date',
+            component: () => import('./views/DoctorRelease.vue'),
+            meta: {
+                requireAuth: true,
+            }
+        },
+        {
+            path: '/doctor/release/schedu/manage',
+            name: 'doctor-release-schedu-edit',
+            component: () => import('./views/DoctorScheduManage.vue'),
             meta: {
                 requireAuth: true,
             }

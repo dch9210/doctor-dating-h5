@@ -6,21 +6,27 @@
         <div>
             <Row>
                 <Col :xs="{ span: 3, offset: 1 }" :lg="{ span: 3, offset: 1  }">
-                    <Icon type="md-arrow-round-back" :size="24"/>
+                    <div @click="decMonth">
+                        <Icon type="md-arrow-round-back" :size="24"/>
+                    </div>
                 </Col>
                 <Col :xs="{ span: 16 }" :lg="{ span: 16}">
                     <strong style="font-size: 18px;">{{year}} - {{month}}</strong>
                 </Col>
                 <Col :xs="{ span: 3}" :lg="{ span: 3 }">
-                    <Icon type="md-arrow-round-forward" :size="24"/>
+                    <div @click="addMonth">
+                        <Icon type="md-arrow-round-forward" :size="24"/>
+                    </div>
                 </Col>
             </Row>
         </div>
         <br>
+        <br>
         <!--星期展示-->
         <div>
             <Row>
-                <Col :xs="{ span: 2, offset: 2 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">一</span></Col>
+                <Col :xs="{ span: 1}" :lg="{ span: 1 }"><span class="wendy-text">&nbsp;</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">一</span></Col>
                 <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">二</span></Col>
                 <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">三</span></Col>
                 <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">四</span></Col>
@@ -31,16 +37,17 @@
         </div>
         <br>
         <!--日历展示-->
-        <div>
-            <Row v-for="i in range(0, calendar.length)/7">
-                <Col :xs="{ span: 2, offset: 2 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">一</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">二</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">三</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">四</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">五</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">六</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="day-text">日</span></Col>
+        <div v-for="i in range(0, Math.ceil(calendar.length / 7))">
+            <Row>
+                <Col :xs="{ span: 1}" :lg="{ span: 1 }"><span class="wendy-text">&nbsp;</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"
+                     v-for="(item, index) in calendar.slice(i*7, i*7+7)">
+                    <span class="day-text" v-if="item == 'empty'">&nbsp;</span>
+                    <span class="day-text" v-if="item != 'empty'" @click="onDateClick(item, $event)"
+                          :class="{'disable': !canEdit(item)}">{{item.getDate()}}</span>
+                </Col>
             </Row>
+            <br>
         </div>
     </div>
 </template>
@@ -50,7 +57,15 @@
 
     export default {
         name: "DatePicker",
-        props: {},
+        props: {
+            alive: {
+                type: Array,
+                // 当为数组类型设置默认值时必须使用数组返回
+                default: function () {
+                    return [];
+                }
+            }
+        },
         data() {
             return {
                 year: 2019,
@@ -66,26 +81,58 @@
                         this.$Message.error(resp.body.msg);
                     } else {
                         this.calendar = resp.body;
-                        var gap = new Date(calendar[0]).getDay() - 1;
-                        for (var i = 0; i < gap; i++) {
-                            this.calendar.push('');
-                        }
                         this.calendar.forEach((date, index) => {
-                            if (date != '') {
-                                date = new Date(date);
-                                this.calendar[index] = date;
-                            }
-                            // console.log(date.getFullYear())
-                            // console.log(date.getMonth())
-                            // console.log(date.getDate())
+                            date = new Date(date);
+                            this.calendar[index] = date;
                         })
+                        if (this.calendar.length > 0) {
+                            var gap = this.calendar[0].getDay();
+                            if (gap == 0)
+                                gap = 7;
+                            if (gap != 1) {
+                                for (var i in this.range(0, gap - 1)) {
+                                    this.calendar.unshift('empty');
+                                }
+                            }
+                        }
                     }
                 }, (error) => {
                     this.$Message.error(error);
                 });
+            },
+            canEdit(date) {
+                for (var i in this.alive) {
+                    var d = this.alive[i];
+                    if (d.Format('yyyyMMdd') == date.Format('yyyyMMdd'))
+                        return true;
+                }
+                return false;
+            },
+            addMonth() {
+                if (this.month == 12) {
+                    this.year += 1;
+                    this.month = 1;
+                } else
+                    this.month += 1;
+                // 留接口给父组件初始化alive日期范围
+                var rs = this.$emit('date-change', this.year, this.month);
+                this.initCalendar();
+            },
+            decMonth() {
+                if (this.month == 1) {
+                    this.year -= 1;
+                    this.month = 12;
+                } else
+                    this.month -= 1;
+                var rs = this.$emit('date-change', this.year, this.month);
+                this.initCalendar();
+            },
+            onDateClick(date, event) {
+                this.$emit('date-click', date, event);
             }
         },
         created() {
+            // 初始化日历结构
             this.initCalendar()
         }
     }
@@ -93,13 +140,18 @@
 
 <style scoped>
     .wendy-text {
-        font-size: 16px;
+        font-size: 22px;
         color: darkgray;
         font-weight: bold;
     }
 
     .day-text {
-        font-size: 18px;
+        font-size: 22px;
         color: black;
     }
+
+    .disable {
+        color: darkgray !important;
+    }
+
 </style>
