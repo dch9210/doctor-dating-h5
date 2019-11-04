@@ -2,13 +2,13 @@
     <div>
         <div style="padding: 20px 20px;background: white;">
             <Row>
-                <Col :xs="{ span: 1 }" :lg="{ span: 2, offset: 1  }">
+                <Col :xs="{ span: 2 }" :lg="{ span: 2, offset: 1  }">
                     <router-link to="/doctor/release/date" style="color: black;">
-                        <Icon type="md-arrow-back" :size="22"/>
+                        <Icon type="md-arrow-back" :size="30"/>
                     </router-link>
                 </Col>
-                <Col :xs="{ span: 23, offset: 0 }" :lg="{ span: 18, offset: 0  }">
-                    <strong>
+                <Col :xs="{ span: 22, offset: 0 }" :lg="{ span: 22, offset: 0  }">
+                    <strong style="line-height: 30px;">
                         {{date.Format("yyyy年MM月d日 - 放号管理")}}
                     </strong>
                 </Col>

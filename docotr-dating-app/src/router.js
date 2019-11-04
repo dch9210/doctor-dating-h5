@@ -51,6 +51,14 @@ export default new Router({
             }
         },
         {
+            path: '/doctor/home',
+            name: 'doctor-hose',
+            component: () => import('./views/DoctorHome.vue'),
+            meta: {
+                requireAuth: true,
+            }
+        },
+        {
             path: '/doctor/release/date',
             name: 'doctor-release-date',
             component: () => import('./views/DoctorRelease.vue'),
