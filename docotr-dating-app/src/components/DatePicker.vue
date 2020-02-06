@@ -5,18 +5,20 @@
         <br>
         <div>
             <Row>
-                <Col :xs="{ span: 3, offset: 1 }" :lg="{ span: 3, offset: 1  }">
-                    <div @click="decMonth">
-                        <Icon type="md-arrow-round-back" :size="24"/>
-                    </div>
+                <Col span="3" offset="2">
+                    <a style="display: block;border-radius: 5px 5px;border: 1px solid #2D8CF0" @click="decMonth">
+                        <!--<Icon type="md-arrow-round-back" :size="24"/>-->
+                        上一月
+                    </a>
                 </Col>
-                <Col :xs="{ span: 16 }" :lg="{ span: 16}">
-                    <strong style="font-size: 18px;">{{year}} - {{month}}</strong>
+                <Col span="14">
+                    <strong style="font-size: 16px;line-height: 16px;">{{year}} 年 {{month}} 月 </strong>
                 </Col>
-                <Col :xs="{ span: 3}" :lg="{ span: 3 }">
-                    <div @click="addMonth">
-                        <Icon type="md-arrow-round-forward" :size="24"/>
-                    </div>
+                <Col span="3" offset="0">
+                    <a style="display: block;border-radius: 5px 5px;border: 1px solid #2D8CF0" @click="addMonth">
+                        <!--<Icon type="md-arrow-round-forward" :size="24"/>-->
+                        下一月
+                    </a>
                 </Col>
             </Row>
         </div>
@@ -26,13 +28,13 @@
         <div>
             <Row>
                 <Col :xs="{ span: 1}" :lg="{ span: 1 }"><span class="wendy-text">&nbsp;</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">一</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">二</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">三</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">四</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">五</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">六</span></Col>
-                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">日</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周一</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周二</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周三</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周四</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周五</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周六</span></Col>
+                <Col :xs="{ span: 2, offset: 1 }" :lg="{ span: 2, offset: 1 }"><span class="wendy-text">周日</span></Col>
             </Row>
         </div>
         <br>
@@ -49,6 +51,7 @@
             </Row>
             <br>
         </div>
+        <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
 </template>
 
@@ -64,19 +67,24 @@
                 default: function () {
                     return [];
                 }
-            }
+            },
+            defYear: Number,
+            defMonth: Number
         },
         data() {
             return {
                 year: 2019,
                 month: 10,
                 calendar: [],
+                spinShow: false
             }
         },
         methods: {
             range: (start, end) => new Array(end - start).fill(start).map((el, i) => start + i),
             initCalendar() {
+                this.spinShow = true;
                 this.$http.get(Global.PATH + '/common/calendar?year=' + this.year + '&month=' + this.month).then((resp) => {
+                    this.spinShow = false;
                     if (resp.body.code) {
                         this.$Message.error(resp.body.msg);
                     } else {
@@ -97,7 +105,8 @@
                         }
                     }
                 }, (error) => {
-                    this.$Message.error(error);
+                    this.$Message.error(error.body.error);
+                    this.spinShow = false;
                 });
             },
             canEdit(date) {
@@ -132,6 +141,13 @@
             }
         },
         created() {
+            // 默认日期加载
+            if (this.defYear) {
+                this.year = this.defYear;
+            }
+            if (this.defMonth) {
+                this.month = this.defMonth;
+            }
             // 初始化日历结构
             this.initCalendar()
         }
@@ -140,9 +156,9 @@
 
 <style scoped>
     .wendy-text {
-        font-size: 22px;
+        font-size: 14px;
         color: darkgray;
-        font-weight: bold;
+        /*font-weight: bold;*/
     }
 
     .day-text {

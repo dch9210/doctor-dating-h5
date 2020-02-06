@@ -1,24 +1,32 @@
 <template>
-    <div style="padding: 4em 2em;">
-        <img alt="Vue logo" src="../assets/logo.png">
-        <Form>
-            <FormItem prop="user" label="手机号">
-                <Input type="text" v-model="user.tel" placeholder="请输入手机号" size="large">
-                </Input>
-            </FormItem>
-            <FormItem prop="password" label="密码">
-                <Input type="password" v-model="user.pwd" placeholder="请输入密码" size="large">
-                </Input>
-            </FormItem>
-            <FormItem>
-                <Button type="success" size="large" @click="handleSubmit" ghost long>登录</Button>
-            </FormItem>
-        </Form>
-        <br>
-        <div>
-            还没有账号？去
-            <router-link to="/sign/up">注册</router-link>
-        </div>
+    <div style="padding: 120px 2em;">
+        <Card style="width:100%">
+            <div style="text-align:center">
+                <Form>
+                    <FormItem prop="user" label="手机号">
+                        <Input type="text" v-model="user.tel" placeholder="请输入手机号" size="large">
+                        </Input>
+                    </FormItem>
+                    <FormItem prop="password" label="密码">
+                        <Input type="password" v-model="user.pwd" placeholder="请输入密码" size="large">
+                        </Input>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="success" size="large" @click="handleSubmit" ghost long>登录</Button>
+                    </FormItem>
+                    <FormItem>
+                        <router-link to="/sign/up">
+                            <Button type="info" size="large" long>注册</Button>
+                        </router-link>
+                    </FormItem>
+                </Form>
+                <br>
+                <div>
+                    忘记密码了？点这里
+                    <router-link to="/sign/pwdReSet">找回密码</router-link>
+                </div>
+            </div>
+        </Card>
     </div>
 </template>
 
@@ -48,14 +56,19 @@
                         } else {
                             this.$Message.success({
                                 content: '登录成功!',
-                                duration: 1.5,
+                                duration: 1,
                                 onClose: function () {
                                     // 登录成功
+                                    // 修改页面标题
+                                    var user = resp.body.data;
+                                    if (user && user.type == 'DOCTOR') {
+                                        document.title = "预约挂号—管理平台"
+                                    }
                                     // 设置cookie
-                                    Global.COOKIE.set(Global.SESSION_KEY, JSON.stringify(resp.body));
+                                    Global.COOKIE.set(Global.SESSION_KEY, JSON.stringify(user));
                                     // 跳转到主页
                                     _this.$router.push({
-                                        path: '/home'
+                                        path: '/doctor/home'
                                     })
                                 }
                             });

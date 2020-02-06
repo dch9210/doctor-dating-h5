@@ -40,6 +40,10 @@ export default new Router({
                     path: 'up',
                     component: () => import('./views/SignUp.vue')
                 },
+                {
+                    path: 'pwdReSet',
+                    component: () => import('./views/PasswordReSetting.vue')
+                },
             ]
         },
         {

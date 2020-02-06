@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    const PATH = 'http://192.168.2.82:80/doctor-dating';
+    const PATH = 'http://192.168.0.100:80/doctor-dating';
     const SESSION_KEY = 'User-Cache';
     const COOKIE = {
         set: function (name, value) {
@@ -36,12 +36,31 @@
             return decodeURIComponent(str);
         }
     }
+    const http_request = function (method, url, params, ok, error) {
+        if(ok && !ok instanceof Function)
+            console.error("Global http_request execute error, 'ok' is not a function")
+        if(error && !error instanceof Function)
+            console.error("Global http_request execute error, 'error' is not a function")
+        if(method == 'get' || method == 'GET') {
+            this.$http.get(PATH + url).then((resp)=> {
+                if(resp.body.type == 'ok') {
+                    ok(resp.body)
+                } else {
+                    this.$Message.error(resp.body.msg)
+                }
+            }, (error) => {
+                this.$Message.error('网络异常.')
+            });
+        } else if(method == 'post' || method == 'POST') {
+
+        }
+    }
 
     export default {
         PATH,
         SESSION_KEY,
         COOKIE,
-        URL_HELPER
+        URL_HELPER,
     }
 </script>
 

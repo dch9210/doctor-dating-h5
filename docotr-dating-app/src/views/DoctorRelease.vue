@@ -1,20 +1,14 @@
 <template>
     <div>
-        <div style="padding: 20px 20px;background: white;">
-            <Row>
-                <Col :xs="{ span: 2 }" :lg="{ span: 2, offset: 1  }">
-                    <router-link to="/doctor/home" style="color: black;">
-                        <Icon type="md-arrow-back" :size="30"/>
-                    </router-link>
-                </Col>
-                <Col :xs="{ span: 22, offset: 0 }" :lg="{ span: 22, offset: 0  }">
-                    <strong style="line-height: 30px;margin-right: 30px;">
-                        放号管理
-                    </strong>
-                </Col>
-            </Row>
+        <div style="text-align: left;padding-top: 25px;padding-left: 25px;">
+            <router-link to="/doctor/home" style="color: black;">
+                <Icon type="ios-arrow-dropleft" :size="30"/>
+            </router-link>
         </div>
-        <DatePicker @date-change="resetDatingPicker" :alive="releaseDateList" @date-click="goScheduEditPage"/>
+        <div style="text-align:center;background: #fff;border-radius: 20px 20px;margin-top: 28px;">
+            <DatePicker @date-change="resetDatingPicker" :defYear="new Date().getFullYear()" :defMonth="new Date().getMonth() + 1"
+                        :alive="releaseDateList" @date-click="goScheduEditPage"/>
+        </div>
     </div>
 </template>
 
@@ -48,6 +42,8 @@
                     }
                 })
             },
+        },
+        created() {
         }
     }
 </script>

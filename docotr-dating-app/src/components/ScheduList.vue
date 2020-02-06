@@ -4,52 +4,38 @@
         </div>
         <!--列表元素-->
         <div style="padding: 0 10px;" v-for="item in list">
-            <div style="height: 34px;background: rgb(26, 44, 120);color: #ffffff;line-height: 34px;border-top-left-radius: 10px;border-top-right-radius: 10px;">
-                <Row>
-                    <Col span="6">
-                        <span>患者信息：</span>
+            <div style="background: #ffffff;padding: 16px 16px;box-shadow: 3px 3px 2px #eee;border-left: 6px solid #3b9dec;border-radius: 3px 3px;">
+                <Row style="text-align: left;">
+                    <Col span="12">
+                        <strong style="color: #C0C0C0;">{{new
+                            Date(item.stime).Format('hh:mm')}} -
+                            {{new Date(item.etime).Format('hh:mm')}}</strong>
                     </Col>
-                    <Col span="5">
-                        暂无预约
-                    </Col>
-                    <Col span="5">
-                        &nbsp;
-                    </Col>
-                    <Col span="5">&nbsp;</Col>
-                    <Col span="3">
-                        <Icon type="ios-call" :size="22"/>
+                    <Col span="12">
+                        <div style="text-align: right;">
+                            <span style="color: #2D8CF0;">暂无预约</span>
+                        </div>
                     </Col>
                 </Row>
-            </div>
-            <div style="background: #ffffff;padding: 10px 10px">
+                <br>
                 <Row style="text-align: left;">
                     <Col span="6">
-                        <span style="color: gray;">预约地点：</span>
+                        <span style="color: gray;">患者信息：</span>
                     </Col>
                     <Col span="18">
-                        <strong>{{item.addr}}</strong>
+                        <div style="text-align: right;">
+                            <span>-</span>
+                        </div>
                     </Col>
                 </Row>
                 <Row style="text-align: left;">
                     <Col span="6">
-                        <span style="color: gray;">预约时间：</span>
+                        <span style="color: gray;">放号地址：</span>
                     </Col>
                     <Col span="18">
-                        <strong>{{new Date(item.stime).Format('yyyy-MM-dd')}} {{new Date(item.stime).Format('hh:mm')}} - {{new Date(item.etime).Format('hh:mm')}}</strong>
-                    </Col>
-                </Row>
-                <Divider />
-                <Row style="text-align: left;">
-                    <Col span="6">
-                        <span style="color: gray;">备注：</span>
-                    </Col>
-                    <Col span="18">
-                        <p>
-                            打得好i的后卫i的话哇偶啊第五大和瓦河
-                            大大伟大
-                            达瓦达瓦达瓦我的娃达娃啊
-                            达娃大
-                        </p>
+                        <div style="text-align: right;">
+                            <span>{{item.addr}}</span>
+                        </div>
                     </Col>
                 </Row>
             </div>
@@ -69,13 +55,9 @@
             }
         },
         data() {
-            return {
-
-            }
+            return {}
         },
-        methods: {
-
-        },
+        methods: {},
         created() {
 
         }

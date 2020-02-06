@@ -1,31 +1,21 @@
 <template>
     <div>
-        <div style="padding: 20px 20px;background: white;">
-            <Row>
-                <Col :xs="{ span: 2 }" :lg="{ span: 2, offset: 1  }">
-                    <router-link to="/doctor/release/date" style="color: black;">
-                        <Icon type="md-arrow-back" :size="30"/>
-                    </router-link>
-                </Col>
-                <Col :xs="{ span: 22, offset: 0 }" :lg="{ span: 22, offset: 0  }">
-                    <strong style="line-height: 30px;">
-                        {{date.Format("yyyy年MM月d日 - 放号管理")}}
-                    </strong>
-                </Col>
-            </Row>
+        <div style="text-align: left;padding-top: 25px;padding-left: 25px;">
+            <router-link to="/doctor/release/date" style="color: black;">
+                <Icon type="ios-arrow-dropleft" :size="30"/>
+            </router-link>
+            <strong style="font-size: 16px;color: white;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{date.Format("yyyy年MM月d日 - 放预约号")}}
+            </strong>
+            <span style="float: right;margin-right: 30px;" @click="showScheduEdit">
+                <Icon type="ios-create" :size="30"/>
+            </span>
         </div>
         <!--已放号信息列表,可点击进入编辑-->
-        <div style="min-height: 1000px;">
+        <div style="min-height: 700px;margin-top: 28px;background: #FCFCFD;border-radius: 20px 20px;">
             <br>
             <ScheduList :list="scheduList"/>
         </div>
-
-        <!--新增按钮，固定在页面右下角-->
-        <Affix :offset-bottom="20" style="text-align: right;">
-            <div @click="showScheduEdit">
-                <Avatar style="background-color: red;margin-right: 30px;" icon="ios-create-outline" :size="40"></Avatar>
-            </div>
-        </Affix>
 
         <!--放号编辑对话框-->
         <Modal v-model="scheduCreate.open" fullscreen title="新增放号" @on-ok="createDoctorSchedu">
@@ -116,10 +106,11 @@
                         });
                     }
                 }, (error) => {
-                    this.$Message.error(error);
+                    this.$Message.error(error.body.error);
                 });
             },
             getScheduList() {
+                console.log(Global.COOKIE.get(Global.SESSION_KEY))
                 var user = JSON.parse(Global.COOKIE.get(Global.SESSION_KEY));
                 this.$http.post(Global.PATH + '/doctor/' + user.id + '/realse/schedu/list', {
                     queryDate: this.date
@@ -130,7 +121,7 @@
                         this.scheduList = resp.body;
                     }
                 }, (error) => {
-                    this.$Message.error(error);
+                    this.$Message.error(error.body.error);
                 });
             }
         },
